@@ -18,15 +18,13 @@ function count(users, mobileDevices, iotDevices) {
   const objIotDevicesMap = new Map(Object.entries(objIotDevices));
 
   const objMobileDevices = mobileDevices.reduce((acc,mobile) => {
-    if(objIotDevicesMap.has(mobile.id)) {
       return acc[mobile.user] ? acc[mobile.user] += objIotDevicesMap.get(mobile.id) : acc[mobile.user] = objIotDevicesMap.get(mobile.id), acc;
-    }
   },{});
   const objMobileDevicesMap = new Map(Object.entries(objMobileDevices));
 
-  const objUsers = users.reduce((acc,user) => {
-    return objMobileDevicesMap.has(user.id) ? acc[user.name] = objMobileDevicesMap.get(user.id) : acc[user.name] = 0, acc;
-  },{});
+  const objUsers = users.map((user) => {
+    return objMobileDevicesMap.has(user.id) ? [user.name, objMobileDevicesMap.get(user.id)] : [user.name, 0];
+  });
 
-  return  new Map(Object.entries(objUsers));
+  return  new Map(objUsers);
 }
