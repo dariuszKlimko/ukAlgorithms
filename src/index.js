@@ -12,23 +12,29 @@ const path = require("path");
 })();
 
 function count(users, mobileDevices, iotDevices) {
+  // count iot devices with same mobile device id
   const objIotDevices = iotDevices.reduce((acc,iot) => {
     return acc[iot.mobile] ? acc[iot.mobile]++ : acc[iot.mobile] = 1, acc;
   },{});
+  // create Map object to keep O(n)
   const objIotDevicesMap = new Map(Object.entries(objIotDevices));
-
+  
+  // assign owner id (with suffix) to counted iot devices
   const objMobileDevices = mobileDevices.reduce((acc,mobile) => {
       return acc[mobile.user] ? acc[mobile.user] += objIotDevicesMap.get(mobile.id) : acc[mobile.user] = objIotDevicesMap.get(mobile.id), acc;
   },{});
+  // create Map object to keep O(n)
   const objMobileDevicesMap = new Map(Object.entries(objMobileDevices));
-
+ 
+  // cut suffix of name
   const objUsers = users.map((user) => {
-    return objMobileDevicesMap.has(user.id) ? {name: user.name.split(' ')[0], count: objMobileDevicesMap.get(user.id)} : {name: user.name.split(' ')[0], count: 0};
+    return {name: user.name.split(' ')[0], count: objMobileDevicesMap.get(user.id) ?  objMobileDevicesMap.get(user.id) : 0} ;
   });
-
-  const resultUsers = objUsers.reduce((acc,user) => {
+  
+  // count iot devices per each name
+  const iotCount = objUsers.reduce((acc,user) => {
     return acc[user.name] ? acc[user.name] += user.count : acc[user.name] = user.count, acc;
   },{});
 
-  return  new Map(Object.entries(resultUsers));
+  return  new Map(Object.entries(iotCount));
 }
