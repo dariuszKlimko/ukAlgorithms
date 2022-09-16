@@ -13,18 +13,27 @@ const path = require("path");
 
 function count(users, mobileDevices, iotDevices) {
   // count iot devices with same mobile device id
-  const objIotDevices = iotDevices.reduce((acc,iot) => {
-    return acc[iot.mobile] ? acc[iot.mobile]++ : acc[iot.mobile] = 1, acc;
-  },{});
-  // create Map object to keep O(n)
-  const objIotDevicesMap = new Map(Object.entries(objIotDevices));
+  const  iotDevicesMap = new Map();
+
+  iotDevices.forEach((iot) => {
+    if(!iotDevicesMap.has(iot.mobile)){
+      iotDevicesMap.set(iot.mobile,0);
+    }
+    const valueIot = iotDevicesMap.get(iot.mobile);
+    iotDevicesMap.set(iot.mobile,valueIot + 1);
+  });
   
   // assign owner id (with suffix) to counted iot devices
-  const objMobileDevices = mobileDevices.reduce((acc,mobile) => {
-      return acc[mobile.user] ? acc[mobile.user] += objIotDevicesMap.get(mobile.id) : acc[mobile.user] = objIotDevicesMap.get(mobile.id), acc;
-  },{});
-  // create Map object to keep O(n)
-  const objMobileDevicesMap = new Map(Object.entries(objMobileDevices));
+  const objMobileDevicesMap = new Map();
+
+  mobileDevices.forEach((mobile) => {
+    if(!objMobileDevicesMap.has(mobile.user)){
+      objMobileDevicesMap.set(mobile.user,iotDevicesMap.get(mobile.id));
+    } else{
+      const valueMobile = objMobileDevicesMap.get(mobile.user);
+      objMobileDevicesMap.set(mobile.user,valueMobile + iotDevicesMap.get(mobile.id));
+    }
+  });
  
   // cut suffix of name
   const objUsers = users.map((user) => {
@@ -32,9 +41,17 @@ function count(users, mobileDevices, iotDevices) {
   });
   
   // count iot devices per each name
-  const iotCount = objUsers.reduce((acc,user) => {
-    return acc[user.name] ? acc[user.name] += user.count : acc[user.name] = user.count, acc;
-  },{});
+  const iotCountMap = new Map();
 
-  return  new Map(Object.entries(iotCount));
+  objUsers.forEach((user) => {
+    if(!iotCountMap.has(user.name)){
+      iotCountMap.set(user.name, user.count)
+    }
+    else{
+      const userValue = iotCountMap.get(user.name);
+      iotCountMap.set(user.name, userValue + user.count);
+    }
+  })
+  
+  return iotCountMap;
 }
