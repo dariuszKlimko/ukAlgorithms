@@ -37,7 +37,7 @@ function count(users, mobileDevices, iotDevices) {
  
   // cut suffix of name
   const objUsers = users.map((user) => {
-    return {name: user.name.split(' ')[0], count: mobileDevicesMap.get(user.id) ?  mgobileDevicesMap.get(user.id) : 0} ;
+    return {name: user.name.split(' ')[0], count: mobileDevicesMap.get(user.id) ?  mobileDevicesMap.get(user.id) : 0} ;
   });
   
   // count iot devices per each name
