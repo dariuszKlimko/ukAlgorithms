@@ -52,7 +52,6 @@ function count(users, mobileDevices, iotDevices) {
       iotCountMap.set(user.name, userValue + user.count);
     }
   })
-  console.log("hello from feature-console");
   
   return iotCountMap;
 }
