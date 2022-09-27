@@ -24,20 +24,20 @@ function count(users, mobileDevices, iotDevices) {
   });
   
   // assign owner id (with suffix) to counted iot devices
-  const objMobileDevicesMap = new Map();
+  const mobileDevicesMap = new Map();
 
   mobileDevices.forEach((mobile) => {
-    if(!objMobileDevicesMap.has(mobile.user)){
-      objMobileDevicesMap.set(mobile.user,iotDevicesMap.get(mobile.id));
+    if(!mobileDevicesMap.has(mobile.user)){
+      mobileDevicesMap.set(mobile.user,iotDevicesMap.get(mobile.id));
     } else{
-      const valueMobile = objMobileDevicesMap.get(mobile.user);
-      objMobileDevicesMap.set(mobile.user,valueMobile + iotDevicesMap.get(mobile.id));
+      const valueMobile = mobileDevicesMap.get(mobile.user);
+      mobileDevicesMap.set(mobile.user,valueMobile + iotDevicesMap.get(mobile.id));
     }
   });
  
   // cut suffix of name
   const objUsers = users.map((user) => {
-    return {name: user.name.split(' ')[0], count: objMobileDevicesMap.get(user.id) ?  objMobileDevicesMap.get(user.id) : 0} ;
+    return {name: user.name.split(' ')[0], count: mobileDevicesMap.get(user.id) ?  mgobileDevicesMap.get(user.id) : 0} ;
   });
   
   // count iot devices per each name
